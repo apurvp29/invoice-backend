@@ -1,0 +1,198 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum AccountTypeEnum {
+  CURRENT
+  SAVING
+}
+
+enum ClientTypeEnum {
+  INDIVISUAL
+  COMPANY
+}
+
+model Business {
+  businessId String   @id @default(uuid()) @map("business_id")
+  name       String
+  logo       String?
+  email      String   @unique
+  phone      String
+  nickName   String?  @map("nick_name")
+  pan        String   @unique
+  tan        String   @unique
+  gst        String   @unique
+  createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @updatedAt @map("updated_at")
+
+  businessAddress        BusinessAddress[]
+  businessBankingDetails BusinessBankingDetails[]
+  Invoice                Invoice[]
+}
+
+model BankingDetails {
+  bankingDetailsId String          @id @default(uuid()) @map("banking_details_id")
+  accountName      String          @map("account_name")
+  accountNumber    String          @unique @map("account_number")
+  bankName         String          @map("bank_name")
+  ifsc             String
+  accountType      AccountTypeEnum @map("account_type")
+  swiftCode        String          @map("swift_code")
+  currency         String
+
+  createdAt              DateTime                 @default(now()) @map("created_at")
+  updatedAt              DateTime                 @updatedAt @map("updated_at")
+  BusinessBankingDetails BusinessBankingDetails[]
+}
+
+model Address {
+  addressId      String @id @default(uuid()) @map("address_id")
+  addressLineOne String @map("address_line_one")
+  addressLineTwo String @map("address_line_two")
+
+  countryId String   @map("country_id")
+  country   Country  @relation(fields: [countryId], references: [countryId])
+  stateId   String   @map("state_id")
+  state     State    @relation(fields: [stateId], references: [stateId])
+  cityId    String   @map("city_id")
+  city      City     @relation(fields: [cityId], references: [cityId])
+  pincode   String
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  businessAddress BusinessAddress[]
+  ClientAddress   ClientAddress[]
+}
+
+model Country {
+  countryId    String   @id @default(uuid()) @map("country_id")
+  name         String
+  code         Int
+  currency     String
+  currencyCode String   @map("currency_code")
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  State   State[]
+  City    City[]
+  Address Address[]
+}
+
+model State {
+  stateId   String   @id @default(uuid()) @map("state_id")
+  name      String
+  code      Int
+  countryId String   @map("country_id")
+  country   Country  @relation(fields: [countryId], references: [countryId])
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  City    City[]
+  Address Address[]
+}
+
+model City {
+  cityId    String   @id @default(uuid()) @map("city_id")
+  name      String
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  stateId   String   @map("state_id")
+  state     State    @relation(fields: [stateId], references: [stateId])
+  countryId String   @map("country_id")
+  country   Country  @relation(fields: [countryId], references: [countryId])
+
+  Address Address[]
+}
+
+model BusinessAddress {
+  businessAddressId String   @id @default(uuid()) @map("business_address_id")
+  createdAt         DateTime @default(now()) @map("created_at")
+  updatedAt         DateTime @updatedAt @map("updated_at")
+  businessId        String   @map("business_id")
+  business          Business @relation(fields: [businessId], references: [businessId], onDelete: Cascade)
+  addressId         String   @map("address_id")
+  address           Address  @relation(fields: [addressId], references: [addressId], onDelete: Cascade)
+}
+
+model BusinessBankingDetails {
+  businessBankingDetailsId String         @id @default(uuid()) @map("business_banking_details_id")
+  createdAt                DateTime       @default(now()) @map("created_at")
+  updatedAt                DateTime       @updatedAt @map("updated_at")
+  businessId               String         @map("business_id")
+  business                 Business       @relation(fields: [businessId], references: [businessId], onDelete: Cascade)
+  bankingDetailsId         String         @map("banking_details_id")
+  bankingDetails           BankingDetails @relation(fields: [bankingDetailsId], references: [bankingDetailsId], onDelete: Cascade)
+}
+
+model Client {
+  clientId     String         @id @default(uuid()) @map("client_id")
+  name         String
+  industryName String         @map("industry_name")
+  logo         String?
+  pan          String
+  tan          String
+  gst          String
+  vat          String
+  clientType   ClientTypeEnum
+  email        String         @unique
+  phone        String
+  nickName     String?        @map("nick_name")
+  createdAt    DateTime       @default(now()) @map("created_at")
+  updatedAt    DateTime       @updatedAt @map("updated_at")
+
+  ClientAddress ClientAddress[]
+  Invoice       Invoice[]
+}
+
+model ClientAddress {
+  businessAddressId String   @id @default(uuid()) @map("business_address_id")
+  createdAt         DateTime @default(now()) @map("created_at")
+  updatedAt         DateTime @updatedAt @map("updated_at")
+  clientId          String   @map("client_id")
+  client            Client   @relation(fields: [clientId], references: [clientId], onDelete: Cascade)
+  addressId         String   @map("address_id")
+  address           Address  @relation(fields: [addressId], references: [addressId], onDelete: Cascade)
+}
+
+model Invoice {
+  invoiceId     String    @id @default(uuid()) @map("invoice_id")
+  invoiceNumber String    @map("invoice_number") @unique
+  invoiceDate   DateTime  @default(now()) @map("invoice_date")
+  dueDate       DateTime? @map("due_date")
+  billedTo      String    @map("billed_to")
+  client        Client    @relation(fields: [billedTo], references: [clientId])
+  billedBy      String    @map("billed_by")
+  business      Business  @relation(fields: [billedBy], references: [businessId])
+  discount      Int?
+  createdAt     DateTime  @default(now()) @map("created_at")
+  updatedAt     DateTime  @updatedAt @map("updated_at")
+
+  InvoiceItems InvoiceItems[]
+  InvoiceTax   InvoiceTax[]
+}
+
+model InvoiceItems {
+  invoiceItemsId String   @id @default(uuid()) @map("invoice_items_id")
+  invoiceId      String   @map("invoice_id")
+  invoice        Invoice  @relation(fields: [invoiceId], references: [invoiceId], onDelete: Cascade)
+  itemName       String   @map("item_name")
+  quantity       Int
+  rate           Int
+  createdAt      DateTime @default(now()) @map("created_at")
+  updatedAt      DateTime @updatedAt @map("updated_at")
+}
+
+model InvoiceTax {
+  invoiceTaxId  String   @id @default(uuid()) @map("invoice_tax_id")
+  createdAt     DateTime @default(now()) @map("created_at")
+  updatedAt     DateTime @updatedAt @map("updated_at")
+  invoiceId     String   @map("invoice_id")
+  invoice       Invoice  @relation(fields: [invoiceId], references: [invoiceId], onDelete: Cascade)
+  taxName       String   @map("tax_name")
+  taxPercentage Int      @map("tax_percentage")
+}

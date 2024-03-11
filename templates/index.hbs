@@ -1,0 +1,113 @@
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Title</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body class="p-10" style="font-family: 'Inter';">
+    <h1 class="text-[#16579d] text-3xl font-semibold mb-2">Invoice</h1>
+    <div class="flex justify-between mb-6">
+      <div class="flex gap-6">
+        <div>
+          <p class="font-semibold text-gray-500 text-[15px]">Invoice No #</p>
+          <p class="font-semibold text-gray-500 text-[15px]">Invoice Date</p>
+          <p class="font-semibold text-gray-500 text-[15px]">Due Date</p>
+          <p class="font-semibold text-gray-500 text-[15px]">GSTIN</p>
+          <p class="font-semibold text-gray-500 text-[15px]">PAN</p>
+        </div>
+        <div>
+          <p class="font-semibold text-[15px]">{{invoiceNumber}}</p>
+          <p class="font-semibold text-[15px]">{{invoiceDate}}</p>
+          <p class="font-semibold text-[15px]">{{dueDate}}</p>
+          <p class="font-semibold text-[15px]">{{businessGST}}</p>
+          <p class="font-semibold text-[15px]">{{businessPAN}}</p>
+        </div>
+      </div>
+      <div>
+        <img src="http://localhost:8000/api/images/Flux.png" alt="fluxbyte-logo" class="w-[112.5px]"/>
+      </div>
+    </div>
+    <div class="flex gap-2 mb-6">
+      <div class="w-1/2 flex-1 bg-[#ecf5ff] rounded-[6px] p-4">
+        <p class="text-[1.4rem] text-[#16579d] font-medium">Billed By</p>
+        <p class="text-[0.9rem] font-semibold">{{businessName}}</p>
+        <p class="text-[0.9rem]">Block no. 11/66, Parimal Apartment, Sector 7B,
+          Gandhinagar,</p>
+        <p class="text-[0.9rem]">Gujarat, India - 382007</p>
+      </div>
+      <div class="w-1/2 flex-1 bg-[#ecf5ff] rounded-[6px] p-4">
+        <p class="text-[1.4rem] text-[#16579d] font-medium">Billed To</p>
+        <p class="text-[0.9rem] font-semibold">{{clientName}}</p>
+        <p class="text-[0.9rem]">A1110-1111, The capital, Science city road,
+          Ahmedabad,</p>
+        <p class="text-[0.9rem]">Gujarat, India - 380060</p>
+        <p class="text-[0.85rem]"><span class="font-semibold">GSTIN:</span>
+          {{clientGST}}</p>
+        <p class="text-[0.85rem]"><span class="font-semibold">PAN:</span>
+          {{clientPAN}}</p>
+      </div>
+    </div>
+    <div class="mb-6">
+      <table class="w-full text-sm text-left rtl:text-right text-gray-500">
+        <thead class="text-xs text-gray-700 uppercase bg-[#16579d]">
+          <tr>
+            <th
+              scope="col"
+              class="p-3 text-[#f7f7f7] tracking-wider rounded-tl-[6px]"
+            >
+              Item name
+            </th>
+            <th scope="col" class="p-3 text-[#f7f7f7] tracking-wider">
+              Quantity
+            </th>
+            <th scope="col" class="p-3 text-[#f7f7f7] tracking-wider">
+              Rate
+            </th>
+            <th
+              scope="col"
+              class="p-3 text-[#f7f7f7] tracking-wider rounded-tr-[6px]"
+            >
+              Amount
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          {{#each items as |item|}}
+            <tr class="bg-white border-b">
+              <th
+                scope="row"
+                class="p-3 font-medium text-gray-900 whitespace-nowrap bg-[#ecf5ff]"
+              >{{item.name}}</th>
+              <td class="p-3 bg-[#ecf5ff]">{{item.quantity}}</td>
+              <td class="p-3 bg-[#ecf5ff]">₹{{item.rate}}</td>
+              <td class="p-3 bg-[#ecf5ff]">₹{{item.amount}}</td>
+            </tr>
+          {{/each}}
+        </tbody>
+      </table>
+    </div>
+
+    <div class="flex justify-end mb-6">
+      <div class="w-[40%]">
+        {{#each taxes as |tax|}}
+          <div class="flex justify-between mb-1">
+            <p>{{tax.taxName}}</p>
+            <p>{{tax.taxPercentage}}%</p>
+          </div>
+        {{/each}}
+        <div class="flex justify-between border-y border-y-black py-2">
+          <p class="text-xl font-semibold">Total(INR)</p>
+          <p class="text-xl font-semibold">₹{{totalAmount}}</p>
+        </div>
+      </div>
+    </div>
+    <div class="w-100vw">
+      <div class="bg-[#ecf5ff] rounded-[6px] p-4 mb-6 w-1/2">
+        <p class="text-lg font-medium">Banking Details</p>
+        <p class="text-[0.9rem]">State Bank of India</p>
+        <p class="text-[0.9rem]">Account holder name: Alex</p>
+        <p class="text-[0.9rem]">Account No. 123-456-7890</p>
+      </div>
+    </div>
+  </body>
+</html>
