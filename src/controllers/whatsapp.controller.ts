@@ -13,22 +13,31 @@ export const sendMessage = async (req: Request, res: Response) => {
   const { invoiceNumber } = req.body;
   const fileLocation = `pdf/invoice_${invoiceNumber}.pdf`;
   const locationURL = await uploadFile(fileLocation, "bucket-invoice-pdf");
-  client.messages
-    .create({
-      body: "Hello From typescript",
-      mediaUrl: [locationURL],
-      from: "whatsapp:+14155238886",
-      to: "whatsapp:+919998757892",
-    })
-    .then((message) => {
-      return res
-        .status(StatusCodes.OK)
-        .send(SuccessResponse("Data fetched", StatusCodes.OK, message));
-    })
-    .catch((error: unknown | any) => {
-      console.error(error);
-      return res
-        .status(StatusCodes.INTERNAL_SERVER_ERROR)
-        .send(InternalServerError());
-    });
+  const download = req.query["isDownload"];
+  if (download === "true") {
+    return res
+      .status(StatusCodes.OK)
+      .send(
+        SuccessResponse("Uploaded Successfully", StatusCodes.OK, locationURL)
+      );
+  } else {
+    client.messages
+      .create({
+        body: "Hello From typescript",
+        mediaUrl: [locationURL],
+        from: "whatsapp:+14155238886",
+        to: "whatsapp:+919998757892",
+      })
+      .then((message) => {
+        return res
+          .status(StatusCodes.OK)
+          .send(SuccessResponse("Message Sent", StatusCodes.OK, message));
+      })
+      .catch((error: unknown | any) => {
+        console.error(error);
+        return res
+          .status(StatusCodes.INTERNAL_SERVER_ERROR)
+          .send(InternalServerError());
+      });
+  }
 };

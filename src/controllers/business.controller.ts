@@ -9,6 +9,7 @@ import {
 import { StatusCodes } from "http-status-codes";
 
 export const createBusiness = async (req: Request, res: Response) => {
+  
   const { name, email, phone, logo, nickname, pan, tan, gst } = req.body;
   const panRegex = new RegExp(/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/);
   const gstRegex = new RegExp(

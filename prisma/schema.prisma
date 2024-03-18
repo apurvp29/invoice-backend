@@ -51,19 +51,14 @@ model BankingDetails {
 }
 
 model Address {
-  addressId      String @id @default(uuid()) @map("address_id")
-  addressLineOne String @map("address_line_one")
-  addressLineTwo String @map("address_line_two")
-
-  countryId String   @map("country_id")
-  country   Country  @relation(fields: [countryId], references: [countryId])
-  stateId   String   @map("state_id")
-  state     State    @relation(fields: [stateId], references: [stateId])
-  cityId    String   @map("city_id")
-  city      City     @relation(fields: [cityId], references: [cityId])
-  pincode   String
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
+  addressId      String   @id @default(uuid()) @map("address_id")
+  addressLineOne String   @map("address_line_one")
+  countryName    String
+  stateName      String
+  cityName       String
+  pincode        String
+  createdAt      DateTime @default(now()) @map("created_at")
+  updatedAt      DateTime @updatedAt @map("updated_at")
 
   businessAddress BusinessAddress[]
   ClientAddress   ClientAddress[]
@@ -72,28 +67,26 @@ model Address {
 model Country {
   countryId    String   @id @default(uuid()) @map("country_id")
   name         String
-  code         Int
+  code         Int      @unique
   currency     String
   currencyCode String   @map("currency_code")
   createdAt    DateTime @default(now()) @map("created_at")
   updatedAt    DateTime @updatedAt @map("updated_at")
 
-  State   State[]
-  City    City[]
-  Address Address[]
+  State State[]
+  City  City[]
 }
 
 model State {
   stateId   String   @id @default(uuid()) @map("state_id")
   name      String
-  code      Int
-  countryId String   @map("country_id")
-  country   Country  @relation(fields: [countryId], references: [countryId])
+  code      Int      @unique
+  countryId Int      @map("country_id")
+  country   Country  @relation(fields: [countryId], references: [code])
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
-  City    City[]
-  Address Address[]
+  City City[]
 }
 
 model City {
@@ -101,12 +94,10 @@ model City {
   name      String
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
-  stateId   String   @map("state_id")
-  state     State    @relation(fields: [stateId], references: [stateId])
-  countryId String   @map("country_id")
-  country   Country  @relation(fields: [countryId], references: [countryId])
-
-  Address Address[]
+  stateId   Int      @map("state_id")
+  state     State    @relation(fields: [stateId], references: [code])
+  countryId Int      @map("country_id")
+  country   Country  @relation(fields: [countryId], references: [code])
 }
 
 model BusinessAddress {
@@ -149,6 +140,13 @@ model Client {
   Invoice       Invoice[]
 }
 
+model ClientIndustry {
+  clientIndustryId String   @id @default(uuid()) @map("client_industry_id")
+  industryName     String   @map("industry_name")
+  createdAt        DateTime @default(now()) @map("created_at")
+  updatedAt        DateTime @updatedAt @map("updated_at")
+}
+
 model ClientAddress {
   businessAddressId String   @id @default(uuid()) @map("business_address_id")
   createdAt         DateTime @default(now()) @map("created_at")
@@ -161,7 +159,7 @@ model ClientAddress {
 
 model Invoice {
   invoiceId     String    @id @default(uuid()) @map("invoice_id")
-  invoiceNumber String    @map("invoice_number") @unique
+  invoiceNumber String    @unique @map("invoice_number")
   invoiceDate   DateTime  @default(now()) @map("invoice_date")
   dueDate       DateTime? @map("due_date")
   billedTo      String    @map("billed_to")

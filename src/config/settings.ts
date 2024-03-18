@@ -1,6 +1,3 @@
-import dotenv from "dotenv";
-dotenv.config();
-
 export type Settings = {
   twilioCredentials: {
     authToken: string;
@@ -14,6 +11,7 @@ export type Settings = {
     audience: string;
     issuerBaseURL: string;
   };
+  port: number
 };
 
 const {
@@ -23,6 +21,7 @@ const {
   AWS_SECRET_ACCESS_KEY,
   ISSUR_BASE_URL,
   AUDIENCE,
+  PORT
 } = process.env;
 
 if (!ACCOUNT_SID || !AUTH_TOKEN) {
@@ -50,4 +49,5 @@ export const settings: Settings = {
     audience: AUDIENCE,
     issuerBaseURL: ISSUR_BASE_URL,
   },
+  port: Number(PORT)
 };

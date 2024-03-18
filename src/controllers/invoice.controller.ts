@@ -220,6 +220,28 @@ export const getInvoiceDetail = async (req: Request, res: Response) => {
         .status(StatusCodes.NOT_FOUND)
         .send(NotFound_Error("Client not exist!"));
     }
+    
+    const clientAddress = await prisma.clientAddress.findFirst({
+      where: {
+        clientId: invoice.billedTo
+      },
+      select: {
+        addressId: true
+      }
+    })
+
+    const address = await prisma.address.findFirst({
+      where: {
+        addressId: clientAddress?.addressId
+      },
+      select: {
+        addressLineOne: true,
+        cityName: true,
+        stateName: true,
+        countryName: true,
+        pincode: true
+      }
+    })
 
     const items = await prisma.invoiceItems.findMany({
       where: {
@@ -267,6 +289,11 @@ export const getInvoiceDetail = async (req: Request, res: Response) => {
       clientName: client.name,
       clientIndustryName: client.industryName,
       clientEmail: client.email,
+      clientStreetAddress: address?.addressLineOne,
+      clientCity: address?.cityName,
+      clientState: address?.stateName,
+      clientCountry: address?.countryName,
+      clientPincode: address?.pincode,
       itemsInvoice: items,
       taxInvoice: taxes,
       totalAmount: total.toFixed(2),

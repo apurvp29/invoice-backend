@@ -66,7 +66,7 @@ export const updateClient = async (req: Request, res: Response) => {
       .status(StatusCodes.BAD_REQUEST)
       .send(BadRequest_Error("Invalid GST number!"));
   }
-
+  
   try {
     const updatedObj = { ...req.body };
     const updatedClient = await prisma.client.update({
@@ -149,6 +149,64 @@ export const getClient = async (req: Request, res: Response) => {
     return res
       .status(StatusCodes.OK)
       .send(SuccessResponse("found", StatusCodes.OK, client));
+  } catch (error: unknown | any) {
+    return res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .send(InternalServerError());
+  }
+};
+
+export const createClientAddress = async (req: Request, res: Response) => {
+  const { clientId, addressId } = req.body;
+
+  try {
+    const clientAddress = await prisma.clientAddress.create({
+      data: {
+        clientId,
+        addressId,
+      },
+    });
+    return res
+      .status(StatusCodes.CREATED)
+      .send(
+        SuccessResponse(
+          "Client Address created",
+          StatusCodes.CREATED,
+          clientAddress
+        )
+      );
+  } catch (error: unknown | any) {
+    return res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .send(InternalServerError());
+  }
+};
+
+export const getAddress = async (req: Request, res: Response) => {
+  const clientId = req.params.id;
+
+  try {
+    const clientAddress = await prisma.clientAddress.findFirst({
+      where: {
+        clientId,
+      },
+    });
+
+    if (!clientAddress) {
+      return res
+        .status(StatusCodes.NOT_FOUND)
+        .send(BadRequest_Error("Client Address not found!"));
+    }
+
+    const address = await prisma.address.findUnique({
+      where: {
+        addressId: clientAddress?.addressId,
+      },
+    });
+
+    return res
+      .status(StatusCodes.CREATED)
+      .send(SuccessResponse("Client Address fetched", StatusCodes.OK, address));
   } catch (error: unknown | any) {
     return res
       .status(StatusCodes.INTERNAL_SERVER_ERROR)
