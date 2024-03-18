@@ -12,7 +12,7 @@ on:
 jobs:
   build:
 
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
 
     strategy:
       matrix:
@@ -22,6 +22,8 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v3
+    - name: Create Environment File
+      run: touch .env
     - name: Set Node.js Options
       run: |
         echo "NODE_OPTIONS=--max-old-space-size=4096" > .env
@@ -32,8 +34,6 @@ jobs:
         cache: 'npm'
     - name: Install Dependencies
       run: npm ci
-    - name: Create Environment File
-      run: touch .env
     - name: Populate Environment File
       run: echo "${{ secrets.PROD_ENV_FILE }}" > .env
     - name: Build Project
