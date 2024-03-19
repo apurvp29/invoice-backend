@@ -1,4 +1,4 @@
-import "dotenv/config"
+import "dotenv/config";
 import express, { Express } from "express";
 import cors from "cors";
 import ClientRoute from "./routes/client.route";
@@ -13,10 +13,9 @@ import TaxRoute from "./routes/tax.routes";
 import StatesRoute from "./routes/states.routes";
 import { auth } from "express-oauth2-jwt-bearer";
 import { settings } from "./config/settings";
-import CountriesRoute from "./routes/countries.routes"
-import CitiesRoute from "./routes/cities.routes"
-import AddressRoute from "./routes/address.routes"
-
+import CountriesRoute from "./routes/countries.routes";
+import CitiesRoute from "./routes/cities.routes";
+import AddressRoute from "./routes/address.routes";
 
 const app: Express = express();
 
@@ -33,7 +32,16 @@ app.use(express.json());
 app.use("/api/images", express.static("templates"));
 app.use(jwtCheck);
 
-app.use("/api/pdf", PdfRoute);
+app.use(
+  "/api/pdf",
+  app.use((req, res, next) => {
+    res.setHeader("Access-Control-Allow-Origin", "*");
+    res.setHeader("Access-Control-Allow-Methods", "POST, GET, PUT");
+    res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+    next();
+  }),
+  PdfRoute
+);
 app.use("/api/message", TwilioRoute);
 app.use("/api/tax", TaxRoute);
 app.use("/api/address", AddressRoute);
