@@ -22,7 +22,6 @@ const app: Express = express();
 
 const PORT = settings.port || 8000;
 
-console.log({settings:settings.authCredentials})
 const jwtCheck = auth({
   audience: settings.authCredentials.audience,
   issuerBaseURL: settings.authCredentials.issuerBaseURL,
