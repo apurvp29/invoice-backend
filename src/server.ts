@@ -27,7 +27,10 @@ const jwtCheck = auth({
   tokenSigningAlg: "RS256",
 });
 
-app.use(cors());
+app.use(cors({
+  origin: true,
+  credentials: true,
+}));
 app.use(express.json());
 app.use("/api/images", express.static("templates"));
 app.use(jwtCheck);

@@ -37,3 +37,5 @@ jobs:
       run: echo "${{ secrets.PROD_ENV_FILE }}" > .env
     - name: Build Project
       run: npm run build
+    - name: restart pm2
+      run: pm2 restart BackendAPI
