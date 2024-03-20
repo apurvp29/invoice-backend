@@ -15,7 +15,6 @@ export const sendMessage = async (req: Request, res: Response) => {
   const fileLocation = path.join(
     process.cwd(),
     "..",
-    "..",
     "files",
     `invoice_${invoiceNumber}.pdf`
   );
