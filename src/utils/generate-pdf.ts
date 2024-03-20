@@ -5,7 +5,7 @@ import * as fs from "fs-extra";
 
 const compile = async function (templateName: any, data: any) {
   console.log("3. inside compile fetching index.hbs");
-  const filePath = path.join(process.cwd(), "templates", `${templateName}.hbs`);
+  const filePath = path.join(process.cwd(), "..", "templates", `${templateName}.hbs`);
   console.log("filepath", filePath);
   try {
     const html = await fs.readFile(filePath, "utf-8");
