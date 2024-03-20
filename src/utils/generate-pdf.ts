@@ -34,7 +34,7 @@ export const generatePdf = async (data: any) => {
   const pdfFolderDir = path.join(
     process.cwd(),
     "..",
-    "pdf",
+    "files",
     `invoice_${data["invoiceNumber"]}.pdf`
   );
   console.log({ pdfFolderDir });

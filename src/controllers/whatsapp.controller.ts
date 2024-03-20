@@ -11,7 +11,7 @@ const client = new Twilio(accountSid, authToken);
 
 export const sendMessage = async (req: Request, res: Response) => {
   const { invoiceNumber } = req.body;
-  const fileLocation = `pdf/invoice_${invoiceNumber}.pdf`;
+  const fileLocation = `files/invoice_${invoiceNumber}.pdf`;
   const locationURL = await uploadFile(fileLocation, "bucket-invoice-pdf");
   const download = req.query["isDownload"];
   if (download === "true") {
