@@ -30,8 +30,6 @@ const jwtCheck = auth({
 app.use(
   cors({
     origin: true,
-    methods: ["GET", "POST", "PUT"],
-    allowedHeaders: ["Content-Type"],
     credentials: true,
   })
 );
