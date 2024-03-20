@@ -11,5 +11,5 @@ export const createPdf = async (req: Request, res: Response) => {
   res.contentType("application/pdf");
   return res
         .status(StatusCodes.OK)
-        .send(SuccessResponse("Data fetched", StatusCodes.OK, "pdf created."));
+        .send(SuccessResponse("Data fetched", StatusCodes.OK, pdf));
 };
