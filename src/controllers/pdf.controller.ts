@@ -8,8 +8,8 @@ export const createPdf = async (req: Request, res: Response) => {
   const bodyValue = req.body;
   const pdf = await generatePdf(bodyValue);
   console.log("createpdf funtion complete .1")
-  res.contentType("application/pdf");
+  // res.contentType("application/pdf");
   return res
         .status(StatusCodes.OK)
-        .send(SuccessResponse("Data fetched", StatusCodes.OK, pdf));
+        .send(SuccessResponse("Data fetched", StatusCodes.OK, "pdf created."));
 };
