@@ -30,6 +30,8 @@ const jwtCheck = auth({
 app.use(
   cors({
     origin: true,
+    methods: ["GET", "POST", "PUT"],
+    allowedHeaders: ["Content-Type"],
     credentials: true,
   })
 );
@@ -37,16 +39,7 @@ app.use(express.json());
 app.use("/api/images", express.static("templates"));
 app.use(jwtCheck);
 
-app.use(
-  "/api/pdf",
-  (req, res, next) => {
-    res.setHeader("Access-Control-Allow-Origin", "*");
-    res.setHeader("Access-Control-Allow-Methods", "POST, GET, PUT");
-    res.setHeader("Access-Control-Allow-Headers", "Content-Type");
-    next();
-  },
-  PdfRoute
-);
+app.use("/api/pdf", PdfRoute);
 app.use("/api/message", TwilioRoute);
 app.use("/api/tax", TaxRoute);
 app.use("/api/address", AddressRoute);
