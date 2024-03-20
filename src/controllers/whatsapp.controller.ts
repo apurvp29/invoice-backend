@@ -4,6 +4,7 @@ import { InternalServerError, SuccessResponse } from "../config/constant";
 import { StatusCodes } from "http-status-codes";
 import { uploadFile } from "./upload.controller";
 import { settings } from "../config/settings";
+import path from "path";
 
 const accountSid = settings.twilioCredentials.accountSid;
 const authToken = settings.twilioCredentials.authToken;
@@ -11,7 +12,14 @@ const client = new Twilio(accountSid, authToken);
 
 export const sendMessage = async (req: Request, res: Response) => {
   const { invoiceNumber } = req.body;
-  const fileLocation = `files/invoice_${invoiceNumber}.pdf`;
+  const fileLocation = path.join(
+    process.cwd(),
+    "..",
+    "..",
+    "files",
+    `invoice_${invoiceNumber}.pdf`
+  );
+  // const fileLocation = `files/invoice_${invoiceNumber}.pdf`;
   const locationURL = await uploadFile(fileLocation, "bucket-invoice-pdf");
   const download = req.query["isDownload"];
   if (download === "true") {
